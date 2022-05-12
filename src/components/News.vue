@@ -44,7 +44,7 @@
             <v-img
               :src="article.urlToImage"
               height="200px"
-              gradient="to top right, rgba(0, 0, 0,.65), rgba(25,38,48,.45)"
+              gradient="to top right, rgba(0, 0, 0,.15), rgba(25,38,48,.18)"
             >
               <v-app-bar             
                 flat
@@ -82,7 +82,7 @@
             </v-card-text>
           </v-card>
         </v-flex>
-        <!-- Dialog -->
+        <!-- Detail Dialog -->
         <v-dialog
           v-model="dialog"
           width="500"
@@ -91,7 +91,6 @@
            <v-img
               :src="selectedArticle.urlToImage"
               height="200px"
-              gradient="to top right, rgba(0, 0, 0,.65), rgba(25,38,48,.45)"
             >
               <v-app-bar             
                 flat
@@ -120,6 +119,42 @@
             </v-card-text>
           </v-card>
         </v-dialog>
+        <!-- Error Dialog -->
+        <v-btn
+          text
+          color="primary accent-4"
+          class="px-0"
+          @click="showError"
+        >
+          Show Error
+        </v-btn>
+        <v-dialog
+          v-model="this.$store.getters['news/getErrorDialog']"
+          width="500"
+        >
+          <v-card>
+            <v-card-title class="text-h5 grey lighten-2">
+              Error
+            </v-card-title>
+
+            <v-card-text class="mt-5">
+              <span class="subtitle-1">Error encountered, please try again later</span>
+            </v-card-text>
+
+            <v-divider></v-divider>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="primary"
+                text
+                @click="hideError"
+              >
+                Close
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-layout>
     </v-container>
   </v-main>
@@ -145,6 +180,12 @@ export default {
     selectedArticle: []
   }),
   methods: {
+    showError() {
+      this.$store.dispatch('news/initError', true);
+    },
+    hideError() {
+      this.$store.dispatch('news/initError', false);
+    },
     showArticleDialog(article) {
       this.selectedArticle = article
       this.dialog = true
@@ -191,7 +232,6 @@ export default {
     this.timeZone = moment.tz.guess();
 
     await this.$store.dispatch('news/retrieveSources');
-
     await this.$store.dispatch('news/retrieveHeadlines', {});
   }
 };

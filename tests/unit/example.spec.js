@@ -1,12 +1,45 @@
-import { shallowMount } from '@vue/test-utils';
-import HelloWorld from '@/components/HelloWorld.vue';
+// Libraries
+import Vue from 'vue'
+import Vuetify from 'vuetify'
+import Vuex from 'vuex'
 
-describe('HelloWorld.vue', () => {
-  it('renders props.msg when passed', () => {
-    const msg = 'new message';
-    const wrapper = shallowMount(HelloWorld, {
-      propsData: { msg },
-    });
-    expect(wrapper.text()).toMatch(msg);
-  });
-});
+// Components
+import App from '@/App.vue'
+
+// Utilities
+import {
+  createLocalVue,
+  shallowMount,
+} from '@vue/test-utils'
+
+Vue.use(Vuetify)
+const localVue = createLocalVue()
+localVue.use(Vuex)
+
+describe('App.vue', () => {
+  let vuetify
+  let actions
+  let store
+
+  beforeEach(() => {
+    actions = {
+      "news/retrieveHeadlines": jest.fn(),
+      "news/retrieveSources": jest.fn(),
+    }
+
+    store = new Vuex.Store({
+      state: {},
+      actions
+    })
+    vuetify = new Vuetify()
+  })
+
+  it('renders a snapshot', () => {
+    const wrapper = shallowMount(App, {
+      localVue,
+      store,
+      vuetify,
+    })
+    expect(wrapper.html()).toMatchSnapshot()
+  })
+})

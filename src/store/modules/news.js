@@ -13,6 +13,9 @@ const getters = {
   },
   getLoading(state) {
     return state.loading;
+  },
+  getErrorDialog(state) {
+    return state.errorDialog;
   }
 };
 
@@ -25,10 +28,16 @@ const mutations = {
   },
   setLoading(state, value) {
     state.loading = value;
+  },
+  setErrorDialog(state, value) {
+    state.errorDialog = value;
   }
 };
 
 const actions = {
+  initError ({ commit }, value) {
+    commit('setErrorDialog', value);
+  },
   async retrieveSources({ commit }) {
     try {
       const response = await axios.get(
@@ -40,6 +49,7 @@ const actions = {
       }
     } catch (error) {
       //
+      commit('setErrorDialog', true);
     }
   },
   async retrieveHeadlines({ commit }, { q, sources }) {
@@ -75,6 +85,7 @@ const actions = {
       }
     } catch (error) {
       //
+      commit('setErrorDialog', true);
     }
   }
 };
@@ -91,7 +102,8 @@ const state = {
   },
   news: [],
   sources: [],
-  loading: true
+  loading: true,
+  errorDialog: false
 };
 
 export default {
